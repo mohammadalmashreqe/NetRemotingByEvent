@@ -35,7 +35,7 @@
         /// <summary>
         /// Defines the serverURI
         /// </summary>
-        private static string serverURI = "serverExample.Rem";
+        private static string serverURI = "server";
 
         /// <summary>
         /// Defines the MessageArrived
@@ -146,6 +146,7 @@
                 MessageArrivedEvent listener = null;
                 Delegate[] dels = MessageArrived.GetInvocationList();
 
+                
                 foreach (Delegate del in dels)
                 {
                     try
@@ -155,8 +156,8 @@
                     }
                     catch (Exception ex)
                     {
-                        //Could not reach the destination, so remove it
-                        //from the list
+                        //Could not reach the destination, 
+                        // to remove disconnected clients 
                         MessageArrived -= listener;
                         ErrorLogger.ErrorLog(ex);
                     }

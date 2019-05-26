@@ -17,19 +17,19 @@ namespace RemotingEvents.Server
         {
             try
             {
-                MessageBox.Show("Exception : " + Environment.NewLine + ex.Message + Environment.NewLine + Environment.NewLine + "for more info : " + Directory.GetCurrentDirectory() + @"\LogFile.txt", "exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Exception : " + Environment.NewLine + ex.Message + Environment.NewLine + Environment.NewLine + "For more info : " + Directory.GetCurrentDirectory() + @"\LogFile.txt", "exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\LogFile.txt", true);
 
                 sw.WriteLine(DateTime.Now);
-                sw.WriteLine("message : ");
+                sw.WriteLine("Message : ");
                 sw.WriteLine("");
 
                 sw.WriteLine(ex.Message);
                 sw.WriteLine("------------------------------------------------------------------------------------");
                 sw.WriteLine("");
 
-                sw.WriteLine("stack trace :");
+                sw.WriteLine("Stack trace :");
                 sw.WriteLine("");
                 sw.WriteLine("");
                 sw.WriteLine(ex.StackTrace);

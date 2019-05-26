@@ -2,6 +2,7 @@
 {
     using System;
     using System.Windows.Forms;
+    using System.Threading;
 
     /// <summary>
     /// Defines the <see cref="frm_Main" />
@@ -28,7 +29,7 @@
             {
                 InitializeComponent();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
@@ -64,7 +65,7 @@
             {
                 SetTextBox(Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
@@ -83,7 +84,7 @@
                 server = null;
                 SetTextBox("Server Stopped");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
@@ -97,19 +98,27 @@
         {
             try
             {
-                if (tbx_Messages.InvokeRequired)
+                lock (this)
                 {
-                    this.BeginInvoke(new SetBoxText(SetTextBox), new object[] { Message });
-                    return;
+
+                    if (tbx_Messages.InvokeRequired)
+                    {
+
+
+                        // .BeginInvoke: Executes asynchronously,
+                        this.BeginInvoke(new SetBoxText(SetTextBox), new object[] { Message });
+                        return;
+                    }
+                    else
+                        tbx_Messages.AppendText(Message + "\r\n");
                 }
-                else
-                    tbx_Messages.AppendText(Message + "\r\n");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
         }
+
 
         /// <summary>
         /// The frm_Main_Load

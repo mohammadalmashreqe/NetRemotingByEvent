@@ -9,9 +9,9 @@
     using System.Windows.Forms;
 
     /// <summary>
-    /// Defines the <see cref="Form1" />
+    /// Defines the <see cref="ClientFrm" />
     /// </summary>
-    public partial class Form1 : Form
+    public partial class ClientFrm : Form
     {
         /// <summary>
         /// Defines the remoteServer
@@ -29,7 +29,7 @@
         TcpChannel tcpChan;
 
         /// <summary>
-        /// Defines the clientProv 
+        /// Defines the clientProv
         /// </summary>
         BinaryClientFormatterSinkProvider clientProv;
 
@@ -41,31 +41,38 @@
         /// <summary>
         /// Defines the serverURI
         /// </summary>
-        private string serverURI = "tcp://localhost:15000/serverExample.Rem";
+        private string serverURI = "tcp://localhost:15000/server";
 
         /// <summary>
-        /// Defines the connected
+        /// Defines the isconnected
         /// </summary>
-        private bool connected = false;
+        private bool isconnected = false;
 
         /// <summary>
         /// The SetBoxText
         /// </summary>
-        /// <param name="Message">The Message<see cref="string"/></param>
         private delegate void SetBoxText(string Message);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Form1"/> class.
+        /// Defines the username
         /// </summary>
-        public Form1()
+        string username;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientFrm"/> class.
+        /// </summary>
+        /// <param name="username">The username<see cref="string"/></param>
+        public ClientFrm(string username)
         {
             try
             {
                 InitializeComponent();
-
+                this.username = username; 
                 clientProv = new BinaryClientFormatterSinkProvider();
                 serverProv = new BinaryServerFormatterSinkProvider();
                 serverProv.TypeFilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Full;
+
+
 
                 eventProxy = new EventProxy();
                 eventProxy.MessageArrived += new MessageArrivedEvent(eventProxy_MessageArrived);
@@ -96,7 +103,7 @@
             {
                 SetTextBox(Message);
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
@@ -109,21 +116,22 @@
         /// <param name="e">The e<see cref="EventArgs"/></param>
         private void bttn_Connect_Click(object sender, EventArgs e)
         {
-            if (connected)
+            if (isconnected)
                 return;
 
             try
             {
                 remoteServer = (IServerObject)Activator.GetObject(typeof(IServerObject), serverURI);
+                remoteServer.MessageArrived += new MessageArrivedEvent(eventProxy.LocallyHandleMessageArrived);
+
                 remoteServer.PublishMessage("Client Connected");        //This is where it will break if we didn't connect
 
                 //Now we have to attach the events...
-                remoteServer.MessageArrived += new MessageArrivedEvent(eventProxy.LocallyHandleMessageArrived);
-                connected = true;
+                isconnected = true;
             }
             catch (Exception ex)
             {
-                connected = false;
+                isconnected = false;
                 SetTextBox("Could not connect: " + ex.Message);
                 ErrorLogger.ErrorLog(ex);
             }
@@ -138,7 +146,7 @@
         {
             try
             {
-                if (!connected)
+                if (!isconnected)
                     return;
 
                 //First remove the event
@@ -162,10 +170,10 @@
         {
             try
             {
-                if (!connected)
+                if (!isconnected)
                     return;
 
-                remoteServer.PublishMessage(tbx_Input.Text);
+                remoteServer.PublishMessage(username+" saye : "+ tbx_Input.Text);
                 tbx_Input.Text = "";
             }
             catch (Exception ex)
@@ -183,16 +191,16 @@
             try
             {
                 if (tbx_Messages.InvokeRequired)
-                {
-                    //IN CASE THE MESSAGE COME FROM ANOTHER CLIENT 
-                    this.BeginInvoke(new SetBoxText(SetTextBox), new object[] { Message });
+                { // .BeginInvoke: Executes asynchronously,
+                    SetBoxText set = new SetBoxText(SetTextBox);
+                    this.BeginInvoke(set, new object[] { Message });
                     return;
                 }
                 else
-                    //IN CASE THE THIS IS SENDER 
+
                     tbx_Messages.AppendText(Message + "\r\n");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }
@@ -204,11 +212,12 @@
         /// <param name="sender">The sender<see cref="object"/></param>
         /// <param name="e">The e<see cref="EventArgs"/></param>
         private void button1_Click(object sender, EventArgs e)
-        {try
+        {
+            try
             {
                 this.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.ErrorLog(ex);
             }

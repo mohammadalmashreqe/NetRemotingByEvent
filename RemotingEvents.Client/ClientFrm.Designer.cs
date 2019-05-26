@@ -1,6 +1,6 @@
 ﻿namespace RemotingEvents.Client
 {
-    partial class Form1
+    partial class ClientFrm
     {
         /// <summary>
         /// Required designer variable.
@@ -38,9 +38,9 @@
             // 
             // bttn_Disconnect
             // 
-            this.bttn_Disconnect.Location = new System.Drawing.Point(280, 12);
+            this.bttn_Disconnect.Location = new System.Drawing.Point(351, 12);
             this.bttn_Disconnect.Name = "bttn_Disconnect";
-            this.bttn_Disconnect.Size = new System.Drawing.Size(182, 32);
+            this.bttn_Disconnect.Size = new System.Drawing.Size(111, 32);
             this.bttn_Disconnect.TabIndex = 3;
             this.bttn_Disconnect.Text = "Disconnect Server";
             this.bttn_Disconnect.UseVisualStyleBackColor = true;
@@ -48,9 +48,9 @@
             // 
             // bttn_Connect
             // 
-            this.bttn_Connect.Location = new System.Drawing.Point(12, 12);
+            this.bttn_Connect.Location = new System.Drawing.Point(219, 12);
             this.bttn_Connect.Name = "bttn_Connect";
-            this.bttn_Connect.Size = new System.Drawing.Size(182, 32);
+            this.bttn_Connect.Size = new System.Drawing.Size(126, 32);
             this.bttn_Connect.TabIndex = 2;
             this.bttn_Connect.Text = "Connect To Server";
             this.bttn_Connect.UseVisualStyleBackColor = true;
